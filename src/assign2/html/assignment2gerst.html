@@ -1,0 +1,309 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>assignment2gerst</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-03"><meta name="DC.source" content="assignment2gerst.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Task 1. Lake Depths</a></li><li><a href="#3">Task 2. Days above target</a></li><li><a href="#4">Task 3. Rain in August</a></li><li><a href="#5">Task 4. Average depth</a></li><li><a href="#6">Task 5. Daily Rainfall</a></li><li><a href="#7">Task 6. Cumulative Rainfall</a></li><li><a href="#8">Task 7. Adjusted Gauge Heights</a></li><li><a href="#9">Task 8. Max daily increase/decrease</a></li><li><a href="#10">Task 9. Gauge Order</a></li></ul></div><pre class="codeinput">clear
+clc
+load <span class="string">water08</span>
+whos
+</pre><pre class="codeoutput">  Name           Size            Bytes  Class     Attributes
+
+  depth        288x2              4608  double              
+  hawgage      365x4             11680  double              
+  hawrain      365x2              5840  double              
+  rain         288x2              4608  double              
+
+</pre><h2>Task 1. Lake Depths<a name="2"></a></h2><pre class="codeinput">plot(depth);
+title(<span class="string">'Lake Depths'</span>);
+legend(<span class="string">'Jordan lake'</span>,<span class="string">'Falls lake'</span>);
+xlabel(<span class="string">'Month: 1 = Jan85; last = Dec08'</span>);
+ylabel(<span class="string">'Depth(ft)'</span>);
+</pre><img vspace="5" hspace="5" src="assignment2gerst_01.png" alt=""> <h2>Task 2. Days above target<a name="3"></a></h2><pre class="codeinput">jordan_target = 216;
+falls_target = 251.5;
+jordan_daysAbove = sum(depth(:,1) &gt; jordan_target);
+falls_daysAbove = sum(depth(:,2) &gt; falls_target);
+jordan_daysAbove
+falls_daysAbove
+</pre><pre class="codeoutput">
+jordan_daysAbove =
+
+   186
+
+
+falls_daysAbove =
+
+    75
+
+</pre><h2>Task 3. Rain in August<a name="4"></a></h2><pre class="codeinput">plot(1985:2008,rain(8:12:end,:));
+title(<span class="string">'August Rainfall'</span>);
+legend(<span class="string">'Jordan lake'</span>,<span class="string">'Falls lake'</span>);
+xlabel(<span class="string">'Year'</span>);
+ylabel(<span class="string">'Rain(in)'</span>);
+</pre><img vspace="5" hspace="5" src="assignment2gerst_02.png" alt=""> <h2>Task 4. Average depth<a name="5"></a></h2><pre class="codeinput">falls_average_depth = zeros(1,12);
+falls08_average_depth = zeros(1,12);
+<span class="keyword">for</span> m = 1:12
+    deviation = 0;
+    <span class="keyword">for</span> i = m:12:length(depth)
+        deviation = deviation + (depth(i,2) - falls_target);
+    <span class="keyword">end</span>
+    falls_average_depth(m) = deviation / 12;
+<span class="keyword">end</span>
+bar(falls_average_depth);
+title(<span class="string">'Average Falls lake depth 85-08, and line for 2008'</span>);
+xlabel(<span class="string">'Month: Jan=1, Dec=12'</span>);
+ylabel(<span class="string">'Height above target (ft)'</span>);
+hold <span class="string">on</span>
+<span class="keyword">for</span> m = 1:12
+    falls08_average_depth(m) = (depth(m+276,2) - falls_target);
+<span class="keyword">end</span>
+plot(falls08_average_depth,<span class="string">'r'</span>);
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="assignment2gerst_03.png" alt=""> <h2>Task 5. Daily Rainfall<a name="6"></a></h2><pre class="codeinput">rainAbove1in = 0;
+rainBelow1_4in = 0;
+rainAbove1in = sum(hawrain &gt; 1);
+rainBelow1_4in = sum(hawrain &lt; .25);
+rainAbove1in
+rainBelow1_4in
+</pre><pre class="codeoutput">
+rainAbove1in =
+
+     7     7
+
+
+rainBelow1_4in =
+
+   330   324
+
+</pre><h2>Task 6. Cumulative Rainfall<a name="7"></a></h2><pre class="codeinput">plot(cumsum(hawrain))
+title(<span class="string">'Cumulative Rainfall'</span>);
+legend(<span class="string">'gauge1'</span>,<span class="string">'gauge2'</span>);
+xlabel(<span class="string">'Days since 28Aug07'</span>);
+ylabel(<span class="string">'Cumulative rainfall (in)'</span>);
+<span class="comment">% gauge2 received more rain</span>
+</pre><img vspace="5" hspace="5" src="assignment2gerst_04.png" alt=""> <h2>Task 7. Adjusted Gauge Heights<a name="8"></a></h2><pre class="codeinput">adjusted_hawgage = zeros(365,4);
+<span class="keyword">for</span> i = 1:4
+    adjusted_hawgage(:,i) = hawgage(:,i) - min(hawgage(:,i));
+<span class="keyword">end</span>
+plot(adjusted_hawgage);
+title(<span class="string">'Adjusted gauge heights'</span>);
+legend(<span class="string">'gauge1'</span>,<span class="string">'gauge2'</span>,<span class="string">'gauge3'</span>,<span class="string">'gauge4'</span>);
+xlabel(<span class="string">'Days since 28Aug07'</span>);
+ylabel(<span class="string">'Height above min (ft)'</span>);
+</pre><img vspace="5" hspace="5" src="assignment2gerst_05.png" alt=""> <h2>Task 8. Max daily increase/decrease<a name="9"></a></h2><pre class="codeinput">maxincrease = zeros(1,4);
+maxdecrease = zeros(1,4);
+<span class="keyword">for</span> i = 2:length(hawgage)
+    <span class="keyword">for</span> j = 1:4
+        daily_change = hawgage(i,j) - hawgage(i-1,j);
+        <span class="keyword">if</span> maxincrease(j) &lt; daily_change
+            maxincrease(j) = daily_change;
+        <span class="keyword">elseif</span> daily_change &lt; 0
+            <span class="keyword">if</span> maxdecrease(j) &lt; abs(daily_change)
+               maxdecrease(j) = abs(daily_change);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+maxincrease
+maxdecrease
+</pre><pre class="codeoutput">
+maxincrease =
+
+    1.1600    7.1500    2.5700    4.3700
+
+
+maxdecrease =
+
+    0.4700    6.2200    1.5600    2.5300
+
+</pre><h2>Task 9. Gauge Order<a name="10"></a></h2><pre class="codeinput"><span class="comment">% Upstream to Downstream</span>
+<span class="comment">% Gauge 2, Gauge 3, Gauge 3, Gauge 1 because as you go downstream the max</span>
+<span class="comment">% daily increase and the max daily decrease both decrease.</span>
+<span class="comment">% Changes in water height are more dramatic upstream.</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+clear
+clc
+load water08
+whos
+
+%% Task 1. Lake Depths
+
+plot(depth);
+title('Lake Depths');
+legend('Jordan lake','Falls lake');
+xlabel('Month: 1 = Jan85; last = Dec08');
+ylabel('Depth(ft)');
+
+
+
+%% Task 2. Days above target
+
+jordan_target = 216;
+falls_target = 251.5;
+jordan_daysAbove = sum(depth(:,1) > jordan_target);
+falls_daysAbove = sum(depth(:,2) > falls_target);
+jordan_daysAbove
+falls_daysAbove
+
+
+
+%% Task 3. Rain in August
+
+plot(1985:2008,rain(8:12:end,:));
+title('August Rainfall');
+legend('Jordan lake','Falls lake');
+xlabel('Year');
+ylabel('Rain(in)');
+
+
+
+%% Task 4. Average depth
+
+falls_average_depth = zeros(1,12);
+falls08_average_depth = zeros(1,12);
+for m = 1:12
+    deviation = 0;
+    for i = m:12:length(depth)
+        deviation = deviation + (depth(i,2) - falls_target);
+    end
+    falls_average_depth(m) = deviation / 12;
+end
+bar(falls_average_depth);
+title('Average Falls lake depth 85-08, and line for 2008');
+xlabel('Month: Jan=1, Dec=12');
+ylabel('Height above target (ft)');
+hold on
+for m = 1:12
+    falls08_average_depth(m) = (depth(m+276,2) - falls_target);
+end
+plot(falls08_average_depth,'r');
+hold off
+
+
+
+%% Task 5. Daily Rainfall
+
+rainAbove1in = 0;
+rainBelow1_4in = 0;
+rainAbove1in = sum(hawrain > 1);
+rainBelow1_4in = sum(hawrain < .25);
+rainAbove1in
+rainBelow1_4in
+
+
+
+%% Task 6. Cumulative Rainfall
+
+plot(cumsum(hawrain))
+title('Cumulative Rainfall');
+legend('gauge1','gauge2');
+xlabel('Days since 28Aug07');
+ylabel('Cumulative rainfall (in)');
+% gauge2 received more rain
+
+
+
+%% Task 7. Adjusted Gauge Heights
+
+adjusted_hawgage = zeros(365,4);
+for i = 1:4
+    adjusted_hawgage(:,i) = hawgage(:,i) - min(hawgage(:,i));
+end
+plot(adjusted_hawgage);
+title('Adjusted gauge heights');
+legend('gauge1','gauge2','gauge3','gauge4');
+xlabel('Days since 28Aug07');
+ylabel('Height above min (ft)');
+
+
+
+%% Task 8. Max daily increase/decrease
+
+maxincrease = zeros(1,4);
+maxdecrease = zeros(1,4);
+for i = 2:length(hawgage)
+    for j = 1:4
+        daily_change = hawgage(i,j) - hawgage(i-1,j);
+        if maxincrease(j) < daily_change
+            maxincrease(j) = daily_change;
+        elseif daily_change < 0
+            if maxdecrease(j) < abs(daily_change)
+               maxdecrease(j) = abs(daily_change);
+            end
+        end
+    end
+end
+maxincrease
+maxdecrease
+
+
+
+%% Task 9. Gauge Order
+
+% Upstream to Downstream
+% Gauge 2, Gauge 3, Gauge 3, Gauge 1 because as you go downstream the max
+% daily increase and the max daily decrease both decrease.
+% Changes in water height are more dramatic upstream.
+##### SOURCE END #####
+--></body></html>

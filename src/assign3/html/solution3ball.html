@@ -1,0 +1,212 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>solution3ball</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-17"><meta name="DC.source" content="solution3ball.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Part 1.1 - Simulating A Trajectory</a></li><li><a href="#3">Part 1.2 - Estimating the parameters from a noisy trajectory</a></li><li><a href="#4">Part 1.3 - Identify the planet</a></li></ul></div><pre class="codeinput"><span class="comment">% Andrew Gerst</span>
+
+clear <span class="string">all</span>; close <span class="string">all</span>;
+</pre><h2>Part 1.1 - Simulating A Trajectory<a name="2"></a></h2><pre class="codeinput">g = 9.81;
+v_0 = 15;
+h_0 = 2;
+t = linspace(0,2,200);
+plot(t,-(g/2) * t .^ 2 + v_0 * t + h_0,<span class="string">'r'</span>);
+title(<span class="string">'Trajectory of the ball'</span>);
+xlabel(<span class="string">'time'</span>);
+ylabel(<span class="string">'height y'</span>);
+
+<span class="comment">% Plot Individual Trajectories</span>
+load <span class="string">noisyTrajectory</span>
+hold <span class="string">on</span>
+plot(t,yn,<span class="string">'+b'</span>);
+</pre><img vspace="5" hspace="5" src="solution3ball_01.png" alt=""> <h2>Part 1.2 - Estimating the parameters from a noisy trajectory<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Estimate Parameters</span>
+A = [ones(size(yn)) t' t' .^ 2];
+est = A\yn
+est_g = abs(est(3)*2);
+est_v_0 = est(2);
+est_h_0 = est(1);
+
+<span class="comment">% Estimated Trajectory</span>
+hold <span class="string">off</span>
+plot(t,-(g/2) * t .^ 2 + v_0 * t + h_0,<span class="string">'r'</span>);
+hold <span class="string">on</span>
+plot(t,-(est_g/2) * t .^ 2 + est_v_0 * t + est_h_0,<span class="string">'b'</span>);
+legend(<span class="string">'Exact'</span>,<span class="string">'Estimated'</span>);
+title(<span class="string">'Exact and estimated trajectories'</span>);
+xlabel(<span class="string">'time'</span>);
+ylabel(<span class="string">'height y'</span>);
+
+<span class="comment">% Compute the Sum of Squared Differences</span>
+ssdiff_exact = sum((yn' - (-(g/2) * t .^ 2 + v_0 * t + h_0)) .^ 2);
+ssdiff_est = sum((yn' - (-(est_g/2) * t .^ 2 + est_v_0 * t + est_h_0)) .^ 2);
+ssdiff_exact
+ssdiff_est
+<span class="keyword">if</span> ssdiff_est &lt; ssdiff_exact
+    disp(<span class="string">'The estimated difference is smaller because the estimated model is based on the data we are comparing it to.'</span>);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+est =
+
+    1.5429
+   16.1004
+   -5.4128
+
+
+ssdiff_exact =
+
+  237.6506
+
+
+ssdiff_est =
+
+  232.2389
+
+The estimated difference is smaller because the estimated model is based on the data we are comparing it to.
+</pre><img vspace="5" hspace="5" src="solution3ball_02.png" alt=""> <h2>Part 1.3 - Identify the planet<a name="4"></a></h2><pre class="codeinput">load <span class="string">planetData</span>
+planets = {<span class="string">'Saturn'</span>,<span class="string">'Moon'</span>,<span class="string">'Earth'</span>,<span class="string">'Pluto'</span>,<span class="string">'Sun'</span>,<span class="string">'Mercury'</span>,<span class="string">'Mars'</span>,<span class="string">'Jupiter'</span>};
+planets_g = [11.2 1.63 9.81 0.61 274.1 3.7 3.73 25.9];
+planets_abbr = {<span class="string">'st'</span>,<span class="string">'nd'</span>,<span class="string">'rd'</span>,<span class="string">'th'</span>,<span class="string">'th'</span>,<span class="string">'th'</span>,<span class="string">'th'</span>,<span class="string">'th'</span>};
+<span class="keyword">for</span> i = 1:8
+    planet = A\yAN(:,i);
+    planet_g = abs(planet(3)*2);
+    fprintf(<span class="string">'%-7s is the %d%s planet (column) with an estimated (observed) gravity of %7.3f and actual gravity of %6.2f\n'</span>,<span class="keyword">...</span>
+        planets{i},i,planets_abbr{i},planet_g,planets_g(i));
+<span class="keyword">end</span>
+
+<span class="comment">% Saturn 1, Moon 2, Earth 3, Pluto 4, Sun 5, Mercury 6, Mars 7, Jupiter 8</span>
+</pre><pre class="codeoutput">Saturn  is the 1st planet (column) with an estimated (observed) gravity of  11.096 and actual gravity of  11.20
+Moon    is the 2nd planet (column) with an estimated (observed) gravity of   1.625 and actual gravity of   1.63
+Earth   is the 3rd planet (column) with an estimated (observed) gravity of   9.897 and actual gravity of   9.81
+Pluto   is the 4th planet (column) with an estimated (observed) gravity of   0.547 and actual gravity of   0.61
+Sun     is the 5th planet (column) with an estimated (observed) gravity of 274.115 and actual gravity of 274.10
+Mercury is the 6th planet (column) with an estimated (observed) gravity of   3.738 and actual gravity of   3.70
+Mars    is the 7th planet (column) with an estimated (observed) gravity of   3.739 and actual gravity of   3.73
+Jupiter is the 8th planet (column) with an estimated (observed) gravity of  25.791 and actual gravity of  25.90
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+% Andrew Gerst
+
+clear all; close all;
+
+
+%% Part 1.1 - Simulating A Trajectory
+
+g = 9.81;
+v_0 = 15;
+h_0 = 2;
+t = linspace(0,2,200);
+plot(t,-(g/2) * t .^ 2 + v_0 * t + h_0,'r');
+title('Trajectory of the ball');
+xlabel('time');
+ylabel('height y');
+
+% Plot Individual Trajectories
+load noisyTrajectory
+hold on
+plot(t,yn,'+b');
+
+%% Part 1.2 - Estimating the parameters from a noisy trajectory
+
+% Estimate Parameters
+A = [ones(size(yn)) t' t' .^ 2];
+est = A\yn
+est_g = abs(est(3)*2);
+est_v_0 = est(2);
+est_h_0 = est(1);
+
+% Estimated Trajectory
+hold off
+plot(t,-(g/2) * t .^ 2 + v_0 * t + h_0,'r');
+hold on
+plot(t,-(est_g/2) * t .^ 2 + est_v_0 * t + est_h_0,'b');
+legend('Exact','Estimated');
+title('Exact and estimated trajectories');
+xlabel('time');
+ylabel('height y');
+
+% Compute the Sum of Squared Differences
+ssdiff_exact = sum((yn' - (-(g/2) * t .^ 2 + v_0 * t + h_0)) .^ 2);
+ssdiff_est = sum((yn' - (-(est_g/2) * t .^ 2 + est_v_0 * t + est_h_0)) .^ 2);
+ssdiff_exact
+ssdiff_est
+if ssdiff_est < ssdiff_exact
+    disp('The estimated difference is smaller because the estimated model is based on the data we are comparing it to.');
+end
+
+
+%% Part 1.3 - Identify the planet
+
+load planetData
+planets = {'Saturn','Moon','Earth','Pluto','Sun','Mercury','Mars','Jupiter'};
+planets_g = [11.2 1.63 9.81 0.61 274.1 3.7 3.73 25.9];
+planets_abbr = {'st','nd','rd','th','th','th','th','th'};
+for i = 1:8
+    planet = A\yAN(:,i);
+    planet_g = abs(planet(3)*2);
+    fprintf('%-7s is the %d%s planet (column) with an estimated (observed) gravity of %7.3f and actual gravity of %6.2f\n',...
+        planets{i},i,planets_abbr{i},planet_g,planets_g(i));
+end
+
+% Saturn 1, Moon 2, Earth 3, Pluto 4, Sun 5, Mercury 6, Mars 7, Jupiter 8
+##### SOURCE END #####
+--></body></html>

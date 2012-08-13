@@ -1,0 +1,306 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Assignment4</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-28"><meta name="DC.source" content="Assignment4.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Problem #1: Gas Tank Volume</a></li><li><a href="#3">Function Descriptions</a></li><li><a href="#4">Part 1B: Plotting Volumes from Current Height</a></li><li><a href="#5">Problem #2: Parking Rates at SLC Airport</a></li><li><a href="#6">Function Descriptions</a></li><li><a href="#7">Part 2A: Long Term Parking</a></li><li><a href="#8">3 Test Cases (Long Term Parking)</a></li><li><a href="#9">Part 2B: Short Term Parking</a></li><li><a href="#10">3 Test Cases (Short Term Parking)</a></li><li><a href="#11">Part 2C: Robustness &amp; User Input</a></li><li><a href="#12">Part 2D: Plotting Parking Rates</a></li></ul></div><pre class="codeinput"><span class="comment">% Andrew Gerst</span>
+</pre><h2>Problem #1: Gas Tank Volume<a name="2"></a></h2><h2>Function Descriptions<a name="3"></a></h2><pre class="codeinput"><span class="comment">% GasTankVolume Function</span>
+<span class="comment">% This function computes the volume of the gas tank in liters by calling</span>
+<span class="comment">% each of the individual functions based on how full the tank is and</span>
+<span class="comment">% whether or not parts of the different components (shapes) are filled and</span>
+<span class="comment">% by how much.</span>
+
+<span class="comment">% HemiSphereVolume Function</span>
+<span class="comment">% This function computes the volume of the top portion of the gas tank</span>
+<span class="comment">% which contains the formula for the volume of a partially filled</span>
+<span class="comment">% hemisphere.</span>
+
+<span class="comment">% CylinderVolume Function</span>
+<span class="comment">% This function computes the volume of the middle portion of the gas tank</span>
+<span class="comment">% which contains the formula for the volume of a cylinder depending on it's</span>
+<span class="comment">% radius and height.</span>
+
+<span class="comment">% ConeVolume Function</span>
+<span class="comment">% This function computes the volume of the bottom portion of the gas tank</span>
+<span class="comment">% which contains the formula for the volume of a partially filled inverted</span>
+<span class="comment">% cone.</span>
+</pre><h2>Part 1B: Plotting Volumes from Current Height<a name="4"></a></h2><pre class="codeinput">heights = -1:11;
+volumes = zeros(1,length(heights));
+<span class="keyword">for</span> idx = 1:length(volumes)
+    volumes(idx) = GasTankVolume(heights(idx));
+<span class="keyword">end</span>
+plot(heights,volumes);
+title(<span class="string">'Height (in meters) vs. Volume (in liters)'</span>);
+xlabel(<span class="string">'Heights from [-1,11]'</span>);
+ylabel(<span class="string">'Volume (in liters)'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment4_01.png" alt=""> <h2>Problem #2: Parking Rates at SLC Airport<a name="5"></a></h2><h2>Function Descriptions<a name="6"></a></h2><pre class="codeinput"><span class="comment">% LongTerm Function</span>
+<span class="comment">% This function determines the rate of long-term parking based on the</span>
+<span class="comment">% amount of days and hours.</span>
+
+<span class="comment">% ShortTerm Function</span>
+<span class="comment">% This function determines the rate of short-term parking based on the</span>
+<span class="comment">% amount of days, hours, and minutes.</span>
+
+<span class="comment">% ValidateTime Function</span>
+<span class="comment">% This function takes values for days, hours, and minutes, and translates</span>
+<span class="comment">% them into more appropriate values, or outputs an error message.</span>
+</pre><h2>Part 2A: Long Term Parking<a name="7"></a></h2><h2>3 Test Cases (Long Term Parking)<a name="8"></a></h2><pre class="codeinput"><span class="comment">% Test case 1: a stay of 27 days, 3 hours should result in an expected rate</span>
+<span class="comment">% of $192</span>
+testRate1 = LongTerm( 27, 3 );
+expectedRate1 = 192;
+<span class="keyword">if</span> (testRate1 ~= expectedRate1)
+    error(<span class="string">'Error: computed rate didn''t match expected rate'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% Test case 2: a stay of 27 days, 3 hours should result in an expected rate</span>
+<span class="comment">% of $192</span>
+testRate2 = LongTerm( 27, 3 );
+expectedRate2 = 192;
+<span class="keyword">if</span> (testRate2 ~= expectedRate2)
+    error(<span class="string">'Error: computed rate didn''t match expected rate'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% Test case 3: a stay of 27 days, 3 hours should result in an expected rate</span>
+<span class="comment">% of $192</span>
+testRate3 = LongTerm( 27, 3 );
+expectedRate3 = 192;
+<span class="keyword">if</span> (testRate3 ~= expectedRate3)
+    error(<span class="string">'Error: computed rate didn''t match expected rate'</span>);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Error using ==&gt; Assignment4 at 72
+Error: computed rate didn't match expected rate
+</pre><h2>Part 2B: Short Term Parking<a name="9"></a></h2><h2>3 Test Cases (Short Term Parking)<a name="10"></a></h2><pre class="codeinput"><span class="comment">% Test case 1: a stay of 27 days, 3 hours, 20 minutes should result in an</span>
+<span class="comment">% expected rate of $192</span>
+testRate1 = LongTerm( 27, 3, 20 );
+expectedRate1 = 192;
+<span class="keyword">if</span> (testRate1 ~= expectedRate1)
+    error(<span class="string">'Error: computed rate didn''t match expected rate'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% Test case 2: a stay of 27 days, 3 hours, 20 minutes should result in an</span>
+<span class="comment">% expected rate of $192</span>
+testRate2 = LongTerm( 27, 3, 20 );
+expectedRate2 = 192;
+<span class="keyword">if</span> (testRate2 ~= expectedRate2)
+    error(<span class="string">'Error: computed rate didn''t match expected rate'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% Test case 3: a stay of 27 days, 3 hours, 20 minutes should result in an</span>
+<span class="comment">% expected rate of $192</span>
+testRate3 = LongTerm( 27, 3, 20 );
+expectedRate3 = 192;
+<span class="keyword">if</span> (testRate3 ~= expectedRate3)
+    error(<span class="string">'Error: computed rate didn''t match expected rate'</span>);
+<span class="keyword">end</span>
+</pre><h2>Part 2C: Robustness &amp; User Input<a name="11"></a></h2><h2>Part 2D: Plotting Parking Rates<a name="12"></a></h2><pre class="codeinput"><span class="comment">% Assume time is a 3 x 1536 matrix: [days; hours; minutes]</span>
+rates = zeros( 2, length( time ) );
+<span class="keyword">for</span> idx = 1:length( time )
+    days = time( 1, idx );
+    hours = time( 2, idx );
+    minutes = time( 3, idx );
+    rates( 1, idx ) = ShortTerm( days, hours, minutes );
+    rates( 2, idx ) = LongTerm( days, hours + minutes/60);
+<span class="keyword">end</span>
+<span class="comment">% Plot Rates</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+% Andrew Gerst
+
+
+%% Problem #1: Gas Tank Volume
+
+
+%% Function Descriptions
+
+% GasTankVolume Function
+% This function computes the volume of the gas tank in liters by calling
+% each of the individual functions based on how full the tank is and
+% whether or not parts of the different components (shapes) are filled and
+% by how much.
+
+% HemiSphereVolume Function
+% This function computes the volume of the top portion of the gas tank
+% which contains the formula for the volume of a partially filled
+% hemisphere.
+
+% CylinderVolume Function
+% This function computes the volume of the middle portion of the gas tank
+% which contains the formula for the volume of a cylinder depending on it's
+% radius and height.
+
+% ConeVolume Function
+% This function computes the volume of the bottom portion of the gas tank
+% which contains the formula for the volume of a partially filled inverted
+% cone.
+
+
+%% Part 1B: Plotting Volumes from Current Height
+
+heights = -1:11;
+volumes = zeros(1,length(heights));
+for idx = 1:length(volumes)
+    volumes(idx) = GasTankVolume(heights(idx));
+end
+plot(heights,volumes);
+title('Height (in meters) vs. Volume (in liters)');
+xlabel('Heights from [-1,11]');
+ylabel('Volume (in liters)');
+
+
+%% Problem #2: Parking Rates at SLC Airport
+
+
+%% Function Descriptions
+
+% LongTerm Function
+% This function determines the rate of long-term parking based on the
+% amount of days and hours.
+
+% ShortTerm Function
+% This function determines the rate of short-term parking based on the
+% amount of days, hours, and minutes.
+
+% ValidateTime Function
+% This function takes values for days, hours, and minutes, and translates
+% them into more appropriate values, or outputs an error message.
+
+
+%% Part 2A: Long Term Parking
+
+
+%% 3 Test Cases (Long Term Parking)
+
+% Test case 1: a stay of 27 days, 3 hours should result in an expected rate
+% of $192
+testRate1 = LongTerm( 27, 3 );
+expectedRate1 = 192;
+if (testRate1 ~= expectedRate1)
+    error('Error: computed rate didn''t match expected rate');
+end
+
+% Test case 2: a stay of 27 days, 3 hours should result in an expected rate
+% of $192
+testRate2 = LongTerm( 27, 3 );
+expectedRate2 = 192;
+if (testRate2 ~= expectedRate2)
+    error('Error: computed rate didn''t match expected rate');
+end
+
+% Test case 3: a stay of 27 days, 3 hours should result in an expected rate
+% of $192
+testRate3 = LongTerm( 27, 3 );
+expectedRate3 = 192;
+if (testRate3 ~= expectedRate3)
+    error('Error: computed rate didn''t match expected rate');
+end
+
+
+%% Part 2B: Short Term Parking
+
+
+%% 3 Test Cases (Short Term Parking)
+
+% Test case 1: a stay of 27 days, 3 hours, 20 minutes should result in an
+% expected rate of $192
+testRate1 = LongTerm( 27, 3, 20 );
+expectedRate1 = 192;
+if (testRate1 ~= expectedRate1)
+    error('Error: computed rate didn''t match expected rate');
+end
+
+% Test case 2: a stay of 27 days, 3 hours, 20 minutes should result in an
+% expected rate of $192
+testRate2 = LongTerm( 27, 3, 20 );
+expectedRate2 = 192;
+if (testRate2 ~= expectedRate2)
+    error('Error: computed rate didn''t match expected rate');
+end
+
+% Test case 3: a stay of 27 days, 3 hours, 20 minutes should result in an
+% expected rate of $192
+testRate3 = LongTerm( 27, 3, 20 );
+expectedRate3 = 192;
+if (testRate3 ~= expectedRate3)
+    error('Error: computed rate didn''t match expected rate');
+end
+
+
+%% Part 2C: Robustness & User Input
+
+
+
+%% Part 2D: Plotting Parking Rates
+
+% Assume time is a 3 x 1536 matrix: [days; hours; minutes]
+rates = zeros( 2, length( time ) );
+for idx = 1:length( time )
+    days = time( 1, idx );
+    hours = time( 2, idx );
+    minutes = time( 3, idx );
+    rates( 1, idx ) = ShortTerm( days, hours, minutes );
+    rates( 2, idx ) = LongTerm( days, hours + minutes/60);
+end
+% Plot Rates
+
+##### SOURCE END #####
+--></body></html>

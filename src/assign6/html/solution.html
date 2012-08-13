@@ -1,0 +1,222 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>solution</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-04-08"><meta name="DC.source" content="solution.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Function Descriptions</a></li><li><a href="#3">readPDBfile Function</a></li><li><a href="#4">potentialHbonds Function</a></li><li><a href="#5">drawAtoms Function</a></li><li><a href="#6">Protein 7HVP</a></li><li><a href="#7">Protein 1GFL</a></li></ul></div><pre class="codeinput"><span class="comment">% Solution to Assignment 6: Andrew Gerst</span>
+
+clear <span class="string">all</span>; close <span class="string">all</span>;
+</pre><h2>Function Descriptions<a name="2"></a></h2><h2>readPDBfile Function<a name="3"></a></h2><p>This function reads the atoms for a protein and returns their serial number, atom name, and coordinates.</p><pre class="codeinput">type <span class="string">readPDBfile</span>
+</pre><pre class="codeoutput">
+function [anum, aname, coords] = readPDBfile(infile)
+% This function reads the atoms for a protein and returns their serial
+% number, atom name, and coordinates.
+
+	fid = fopen(infile,'rt');
+    if fid == -1
+        return
+    end
+    anum = []; aname = []; coords = [];
+    while ~feof(fid)
+        line = fgetl(fid);
+        record = line(1:6);
+        num = line(7:11);
+        name = line(13:16);
+        seqnum = line(23:26);
+        xcoord = line(31:38);
+        ycoord = line(39:46);
+        zcoord = line(47:54);
+        coord = [str2double(xcoord) str2double(ycoord) str2double(zcoord)];
+        if strcmp(record,'ATOM  ')
+            anum = [anum;str2num(num)];
+            aname = [aname;upper(name)];
+            coords = [coords;coord];
+        end
+    end
+    aname = strtrim(aname);
+    fclose(fid);
+end
+</pre><h2>potentialHbonds Function<a name="4"></a></h2><p>This function looks for any possible pairs of Nitrogen and Oxygen between a distance of 2.6 and 3.2 angstroms. Returns a list containing the pairs of atom numbers for hydrogen bonding pairs.</p><pre class="codeinput">type <span class="string">potentialHbonds</span>
+</pre><pre class="codeoutput">
+function pairs = potentialHbonds(anum, aname, coords)
+% This function looks for any possible pairs of Nitrogen and Oxygen between
+% a distance of 2.6 and 3.2 angstroms. Returns a list containing the pairs
+% of atom numbers for hydrogen bonding pairs.
+    
+    pairs = [];
+    name = cellstr(aname);
+    nitrogen = [];
+    oxygen = [];
+    for idx = 1:length(name)
+        if name{idx}(1) == 'N'
+            nitrogen = [nitrogen idx];
+        elseif name{idx}(1) == 'O'
+            oxygen = [oxygen idx];
+        end
+    end
+    for ii = 1:length(nitrogen)
+        for jj = 1:length(oxygen)
+            n_idx = nitrogen(ii);
+            o_idx = oxygen(jj);
+            d = sqrt((coords(n_idx,1)-coords(o_idx,1))^2 + (coords(n_idx,2)-coords(o_idx,2))^2 + (coords(n_idx,3)-coords(o_idx,3))^2);
+            if d &gt; 2.6 &amp;&amp; d &lt; 3.2
+                pairs = [pairs; [anum(n_idx) anum(o_idx)]];
+            end
+        end
+    end
+end
+</pre><h2>drawAtoms Function<a name="5"></a></h2><p>This function plots any atoms with aname matching the queryName.</p><pre class="codeinput">type <span class="string">drawAtoms</span>
+</pre><pre class="codeoutput">
+function ret = drawAtoms(queryName, marker, aname, coords)
+% This function plots any atoms with aname matching the queryName.
+
+    query = strtrim(queryName);
+    name = cellstr(aname);
+    coord = [];
+    for idx = 1:length(name)
+        if strcmp(query,name{idx})
+            coord = [coord; [coords(idx,1) coords(idx,2) coords(idx,3)]];
+        end
+    end
+    plot3(coord(:,1),coord(:,2),coord(:,3),marker);
+end
+</pre><h2>Protein 7HVP<a name="6"></a></h2><pre class="codeinput">[anum aname coords] = readPDBfile(<span class="string">'7HVP.pdb'</span>);
+
+<span class="comment">% Generate 3D Plot of C atoms</span>
+drawAtoms(<span class="string">' C  '</span>, <span class="string">'g*'</span>, aname, coords);
+
+<span class="comment">% Output number of hydrogen bonds</span>
+pairs = potentialHbonds(anum, aname, coords);
+numOfHbondPairs = length(pairs)
+</pre><pre class="codeoutput">
+numOfHbondPairs =
+
+   286
+
+</pre><img vspace="5" hspace="5" src="solution_01.png" alt=""> <h2>Protein 1GFL<a name="7"></a></h2><pre class="codeinput">[anum aname coords] = readPDBfile(<span class="string">'1GFL.pdb'</span>);
+
+<span class="comment">% Generate 3D Plot of C atoms</span>
+drawAtoms(<span class="string">' C  '</span>, <span class="string">'g*'</span>, aname, coords);
+
+<span class="comment">% Output number of hydrogen bonds</span>
+pairs = potentialHbonds(anum, aname, coords);
+numOfHbondPairs = length(pairs)
+</pre><pre class="codeoutput">
+numOfHbondPairs =
+
+   775
+
+</pre><img vspace="5" hspace="5" src="solution_02.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+% Solution to Assignment 6: Andrew Gerst
+
+clear all; close all;
+
+
+%% Function Descriptions
+
+%% readPDBfile Function
+% This function reads the atoms for a protein and returns their serial
+% number, atom name, and coordinates.
+
+type readPDBfile
+
+
+%% potentialHbonds Function
+% This function looks for any possible pairs of Nitrogen and Oxygen between
+% a distance of 2.6 and 3.2 angstroms. Returns a list containing the pairs
+% of atom numbers for hydrogen bonding pairs.
+
+type potentialHbonds
+
+
+%% drawAtoms Function
+% This function plots any atoms with aname matching the queryName.
+
+type drawAtoms
+
+
+%% Protein 7HVP
+
+[anum aname coords] = readPDBfile('7HVP.pdb');
+
+% Generate 3D Plot of C atoms
+drawAtoms(' C  ', 'g*', aname, coords);
+
+% Output number of hydrogen bonds
+pairs = potentialHbonds(anum, aname, coords);
+numOfHbondPairs = length(pairs)
+
+
+%% Protein 1GFL
+
+[anum aname coords] = readPDBfile('1GFL.pdb');
+
+% Generate 3D Plot of C atoms
+drawAtoms(' C  ', 'g*', aname, coords);
+
+% Output number of hydrogen bonds
+pairs = potentialHbonds(anum, aname, coords);
+numOfHbondPairs = length(pairs)
+##### SOURCE END #####
+--></body></html>

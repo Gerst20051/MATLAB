@@ -1,0 +1,209 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Final Project: Andrew Gerst</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-04-20"><meta name="DC.source" content="main.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Final Project: Andrew Gerst</h1><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+
+<span class="keyword">try</span>
+	load(<span class="string">'survey_data.mat'</span>);
+<span class="keyword">catch</span> exception
+	A = [];
+<span class="keyword">end</span>
+
+numrows = length(A(:,1));
+questions = 2:length(A(1,:));
+males = find(A(:,1) == 0);
+females = find(A(:,1) == 1);
+shift = .2;
+
+<span class="keyword">if</span> length(males) &gt; 0
+    male_data = A(males,2:end);
+
+    <span class="comment">% Question Averages</span>
+    male_averages = sum(male_data,1) / length(males);
+    plot(questions+shift, male_averages, <span class="string">'--b.'</span>, <span class="string">'markersize'</span>, 20);
+
+    hold <span class="string">on</span>
+
+    <span class="comment">% Question Medians</span>
+    male_medians = median(male_data,1);
+    plot(questions+shift, male_medians, <span class="string">'--bs'</span>, <span class="string">'markersize'</span>, 10)
+
+    <span class="comment">% Individual Times</span>
+    plot(questions+shift, male_data, <span class="string">'.b'</span>);
+
+    <span class="comment">% Overall Average</span>
+    male_average(1:length(questions)) = sum(male_averages) / length(questions);
+    plot(questions+shift, male_average, <span class="string">'-b'</span>);
+
+    <span class="comment">% Overall Median Average</span>
+    male_maverage(1:length(questions)) = sum(male_medians) / length(questions);
+    plot(questions+shift, male_maverage, <span class="string">'--b'</span>);
+
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> length(females) &gt; 0
+    female_data = A(females,2:end);
+
+    <span class="comment">% Question Averages</span>
+    female_averages = sum(female_data,1) / length(females);
+    plot(questions-shift, female_averages, <span class="string">'--m.'</span>, <span class="string">'markersize'</span>, 20);
+
+    hold <span class="string">on</span>
+
+    <span class="comment">% Question Medians</span>
+    female_medians = median(female_data,1);
+    plot(questions-shift, female_medians, <span class="string">'--ms'</span>, <span class="string">'markersize'</span>, 10)
+
+    <span class="comment">% Individual Times</span>
+    plot(questions-shift, female_data, <span class="string">'.m'</span>);
+
+    <span class="comment">% Overall Average</span>
+    female_average(1:length(questions)) = sum(female_averages) / length(questions);
+    plot(questions-shift, female_average, <span class="string">'-m'</span>);
+
+    <span class="comment">% Overall Median Average</span>
+    female_maverage(1:length(questions)) = sum(female_medians) / length(questions);
+    plot(questions-shift, female_maverage, <span class="string">'--m'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% Plot Labels</span>
+title(<span class="string">'Gender vs. Response Time | Male (blue) - Female (magenta)'</span>);
+xlabel(<span class="string">'Question'</span>);
+ylabel(<span class="string">'Response Time (sec)'</span>);
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Final Project: Andrew Gerst
+
+clear all; close all;
+
+try
+	load('survey_data.mat');
+catch exception
+	A = [];
+end
+
+numrows = length(A(:,1));
+questions = 2:length(A(1,:));
+males = find(A(:,1) == 0);
+females = find(A(:,1) == 1);
+shift = .2;
+
+if length(males) > 0
+    male_data = A(males,2:end);
+
+    % Question Averages
+    male_averages = sum(male_data,1) / length(males);
+    plot(questions+shift, male_averages, 'REPLACE_WITH_DASH_DASHb.', 'markersize', 20);
+
+    hold on
+
+    % Question Medians
+    male_medians = median(male_data,1);
+    plot(questions+shift, male_medians, 'REPLACE_WITH_DASH_DASHbs', 'markersize', 10)
+
+    % Individual Times
+    plot(questions+shift, male_data, '.b');
+
+    % Overall Average
+    male_average(1:length(questions)) = sum(male_averages) / length(questions);
+    plot(questions+shift, male_average, '-b');
+
+    % Overall Median Average
+    male_maverage(1:length(questions)) = sum(male_medians) / length(questions);
+    plot(questions+shift, male_maverage, 'REPLACE_WITH_DASH_DASHb');
+
+end
+
+if length(females) > 0
+    female_data = A(females,2:end);
+
+    % Question Averages
+    female_averages = sum(female_data,1) / length(females);
+    plot(questions-shift, female_averages, 'REPLACE_WITH_DASH_DASHm.', 'markersize', 20);
+
+    hold on
+
+    % Question Medians
+    female_medians = median(female_data,1);
+    plot(questions-shift, female_medians, 'REPLACE_WITH_DASH_DASHms', 'markersize', 10)
+
+    % Individual Times
+    plot(questions-shift, female_data, '.m');
+
+    % Overall Average
+    female_average(1:length(questions)) = sum(female_averages) / length(questions);
+    plot(questions-shift, female_average, '-m');
+    
+    % Overall Median Average
+    female_maverage(1:length(questions)) = sum(female_medians) / length(questions);
+    plot(questions-shift, female_maverage, 'REPLACE_WITH_DASH_DASHm');
+end
+
+% Plot Labels
+title('Gender vs. Response Time | Male (blue) - Female (magenta)');
+xlabel('Question');
+ylabel('Response Time (sec)');
+##### SOURCE END #####
+--></body></html>
