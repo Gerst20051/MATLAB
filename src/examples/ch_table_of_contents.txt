@@ -1,0 +1,66 @@
+Chapter 2: Introduction
+- Algorithms
+- MATLAB Scripts
+- Input and Output (Load and Save)
+- Simple Plots
+- User-Defined Functions
+
+Chapter 3: Selection Statements
+- 
+- 
+- 
+
+Chapter 4: Looping
+- 
+- 
+- 
+
+Chapter 5: MATLAB Programs
+- 
+- 
+- 
+
+Chapter 6: String Manipulation
+- 
+- 
+- 
+
+Chapter 7: Data Structures: Cell Arrays and Structures
+- 
+- 
+- 
+
+Chapter 8: Advanced File Input and Output
+- 
+- 
+- 
+
+Chapter 9: Advanced Functions
+- 
+- 
+- 
+
+Chapter 10: MATLAB Plots
+- 
+- 
+- 
+
+Chapter 11: Solving Systems of Linear Algebraic Equations
+- 
+- 
+- 
+
+Chapter 12: Basic Statistics, Searching, and Sorting
+- 
+- 
+- 
+
+Chapter 13: Sights and Sounds
+- 
+- 
+- 
+
+Chapter 14: Advanced Mathematics
+- 
+- 
+- 
