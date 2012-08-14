@@ -5,62 +5,89 @@ Chapter 2: Introduction
 - Simple Plots
 - User-Defined Functions
 
+
 Chapter 3: Selection Statements
-- 
-- 
-- 
+- Relational Expressions
+- The if Statement
+- The if-Else Statement
+- Nested if-Else Statements
+- The Switch Statement
+- The Menu Function
+- The is Function in MATLAB
+
 
 Chapter 4: Looping
-- 
-- 
-- 
+- The for Loop
+- Nested for Loops
+- Vectorizing
+- While Loops
+
 
 Chapter 5: MATLAB Programs
-- 
-- 
-- 
+- More Types of User-Defined Functions
+- MATLAB Program Organization
+- Application: Menu-Driven Modular Program
+- Variable Scope
+- Debugging Techniques
+
 
 Chapter 6: String Manipulation
-- 
-- 
-- 
+- Creating String Variables
+- Operations on Strings
+- The is Function for Strings
+- Converting between String and Number Types
+
 
 Chapter 7: Data Structures: Cell Arrays and Structures
-- 
-- 
-- 
+- Cell Arrays
+- Structures
+
 
 Chapter 8: Advanced File Input and Output
-- 
-- 
-- 
+- Lower Level File I/O Functions
+- Writing and Reading Spreadsheet Files
+- Using MAT-Files for Variables
+
 
 Chapter 9: Advanced Functions
-- 
-- 
-- 
+- Anonymous Functions
+- Uses of Function Handles
+- Variable Numbers of Arguments
+- Nested Functions
+- Recursive Functions
+
 
 Chapter 10: MATLAB Plots
-- 
-- 
-- 
+- Plot Functions
+- Animation
+- Three-Dimensional Plots
+- Customizing Plots
+- Graphics Properties
+- Plot Applications
+
 
 Chapter 11: Solving Systems of Linear Algebraic Equations
-- 
-- 
-- 
+- Matrix Definitions
+- Matrix Solutions to Systems of Linear
+- Symbolic Mathematics
+
 
 Chapter 12: Basic Statistics, Searching, and Sorting
-- 
-- 
-- 
+- Statistical Functions
+- Set Operations
+- Sorting
+- Indexing
+- Searching
+
 
 Chapter 13: Sights and Sounds
-- 
-- 
-- 
+- Sound Files
+- Introduction to Handle Graphics
+- Image Proessing
+- Introduction to Graphical User Interfaces
+
 
 Chapter 14: Advanced Mathematics
-- 
-- 
-- 
+- Fitting Curves to Data
+- Complex Numbers
+- Calculus: Integration and Differentiation
